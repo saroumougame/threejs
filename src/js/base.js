@@ -39,6 +39,7 @@ document.onkeyup = function(e){
 
 };
 
+
 window.addEventListener("click",()=>{
     raycaster.setFromCamera(new THREE.Vector2(), camera);
 
@@ -46,13 +47,23 @@ window.addEventListener("click",()=>{
 
     for ( var i = 0; i<intersects.length; i++){
         console.log("found");
-        scene.remove( intersects[i].object );
+
+        intersects[i].object.material.transparent = false;
+
+        //scene.remove( intersects[i].object );
         break;
         //intersects[i].object.material.color.set(0xff0000);
     }
 }, false)
 
+
+
+
+
 function init() {
+
+
+
 
     scene = new THREE.Scene();
 
@@ -62,29 +73,39 @@ function init() {
 
     var texture = new THREE.TextureLoader().load('/images/crate.gif');
 
-    for (var x = 0; x<30; x++){
 
-        for (var y = 0; y<30; y++){
+    var geometry = new THREE.BoxGeometry(2, 2, 2);
 
-            var geometry = new THREE.BoxGeometry(2,2,2);
 
-            var material = new THREE.MeshBasicMaterial({
+    for (var x = 0; x<10; x++){
 
-                color: Math.floor(Math.random() * 16777215),
+        for (var y = 0; y<10; y++){
 
-                map : texture
-            });
+            for (var z = 0; z<10; z++) {
 
-            var mesh = new THREE.Mesh(geometry, material);
 
-            mesh.position.x -= x * 2;
 
-            mesh.position.z -= y * 2;
+                var material = new THREE.MeshBasicMaterial({
 
-            mesh.position.y = -2;
+                    color: Math.floor(Math.random() * 16777215),
 
-            scene.add(mesh);
+                    map: texture,
+                    transparent: true,
+                    opacity: 0.0,
+                });
 
+
+
+                var mesh = new THREE.Mesh(geometry, material);
+
+                mesh.position.x += x * 2;
+
+                mesh.position.z += z * 2;
+
+                mesh.position.y += y * 2;
+
+                scene.add(mesh);
+            }
         }
 
 
@@ -223,6 +244,26 @@ var clock = new THREE.Clock();
 
 
 function animate() {
+
+
+    if (keys[70]) {
+
+        raycaster.setFromCamera(new THREE.Vector2(), camera);
+
+        var intersects = raycaster.intersectObjects(scene.children);
+
+        for ( var i = 0; i<intersects.length; i++){
+            console.log("found");
+
+            intersects[i].object.material.transparent = true;
+           // scene.remove( intersects[i].object );
+            break;
+            //intersects[i].object.material.color.set(0xff0000);
+        }
+
+    }
+
+
 
     requestAnimationFrame(animate);
 

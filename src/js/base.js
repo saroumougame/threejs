@@ -104,6 +104,8 @@ function init() {
 
                 mesh.position.y += y * 2;
 
+
+
                 scene.add(mesh);
             }
         }
@@ -111,6 +113,26 @@ function init() {
 
 
     }
+
+
+
+    for (var x = 0; x<30; x++){
+        for (var y = 0; y<30; y++){
+            var geometry = new THREE.BoxGeometry(2,2,2);
+            var material = new THREE.MeshBasicMaterial({
+                map: texture,
+            });
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.x = x * 2;
+            mesh.position.z = y * 2;
+            mesh.position.y = -2;
+            scene.add(mesh);
+        }
+
+    }
+
+
+
 
     // var geometry = new THREE.Geometry();
 

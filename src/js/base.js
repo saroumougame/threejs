@@ -11,8 +11,16 @@ import * as THREE from 'three';
 import 'three/examples/js/controls/PointerLockControls';
 
 
+import 'three/examples/js/shaders/CopyShader';
+import 'three/examples/js/shaders/DotScreenShader';
+import 'three/examples/js/shaders/RGBShiftShader';
+import 'three/examples/js/postprocessing/EffectComposer';
+import 'three/examples/js/postprocessing/RenderPass';
+import 'three/examples/js/postprocessing/ShaderPass';
 
-let camera, scene, renderer, geometry, material, mesh, controls;
+
+
+let camera, scene, renderer, geometry, material, mesh, controls, composer;
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -20,6 +28,9 @@ var mouse = new THREE.Vector2();
 var verticalSpeed = 0;
 
 var keys = [];
+
+
+
 
 document.onkeydown = function(e){
 
@@ -44,6 +55,7 @@ window.addEventListener("click",()=>{
     raycaster.setFromCamera(new THREE.Vector2(), camera);
 
     var intersects = raycaster.intersectObjects(scene.children);
+
 
     for ( var i = 0; i<intersects.length; i++){
         console.log("found");
@@ -131,6 +143,25 @@ function init() {
 
     }
 
+
+    // postprocessing
+    renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+   composer = new THREE.EffectComposer( renderer );
+    composer.addPass( new THREE.RenderPass( scene, camera ) );
+    var effect = new THREE.ShaderPass( THREE.DotScreenShader );
+    effect.uniforms[ 'scale' ].value = 4;
+    composer.addPass( effect );
+    var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+    effect.uniforms[ 'amount' ].value = 0.0015;
+    effect.renderToScreen = true;
+    composer.addPass( effect );
+
+
+    //
 
 
 
@@ -286,6 +317,12 @@ function animate() {
     }
 
 
+    if (keys[71]) {
+
+
+    }
+
+
 
     requestAnimationFrame(animate);
 
@@ -343,6 +380,9 @@ function animate() {
 
 
 
+
+
+
     //Déplacement droite (D)
 
     if (keys[68]) {
@@ -359,7 +399,9 @@ function animate() {
     //     // console.log("found");
     //     intersects[i].object.material.color.set(0xff0000);
     // }
-    renderer.render(scene, camera);
+
+    composer.render();
+  //  renderer.render(scene, camera);
 
 };
 

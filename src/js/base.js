@@ -58,7 +58,7 @@ window.addEventListener("click",()=>{
 
 
     for ( var i = 0; i<intersects.length; i++){
-        console.log("found");
+
 
         intersects[i].object.material.transparent = false;
 

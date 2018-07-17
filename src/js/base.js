@@ -151,14 +151,16 @@ function init() {
     document.body.appendChild( renderer.domElement );
 
    composer = new THREE.EffectComposer( renderer );
-    composer.addPass( new THREE.RenderPass( scene, camera ) );
-    var effect = new THREE.ShaderPass( THREE.DotScreenShader );
-    effect.uniforms[ 'scale' ].value = 4;
-    composer.addPass( effect );
-    var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
-    effect.uniforms[ 'amount' ].value = 0.0015;
-    effect.renderToScreen = true;
-    composer.addPass( effect );
+   //composer.addPass( new THREE.RenderPass( scene, camera ) );
+    var toto = new THREE.RenderPass( scene, camera );
+   // var effect = new THREE.ShaderPass( THREE.DotScreenShader );
+   // effect.uniforms[ 'scale' ].value = 4;
+   // composer.addPass( effect );
+ //   var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+    //effect.uniforms[ 'amount' ].value = 0.0015;
+    //effect.renderToScreen = true;
+    toto.renderToScreen = true;
+    composer.addPass( toto );
 
 
     //
@@ -295,7 +297,7 @@ function init() {
 var clock = new THREE.Clock();
 
 
-
+var particules = [];
 function animate() {
 
 
@@ -308,14 +310,26 @@ function animate() {
         var intersects = raycaster.intersectObjects(scene.children);
 
         var ParticuleGeometry = new THREE.Geometry();
-        var particule = new THREE.Vector3();
-
-console.log(particule);
-        particule.x = 2;
-        particule.z = 2;
-        particule.y = 2;
+        var particule;
+        for (var cpt = 0; cpt < 15; cpt++){
+            particule =  new THREE.Vector3();
+            particule.x =  Math.random() *10;
+            particule.z =  Math.random() * 10;
+            particule.y =  Math.random() * 10;
+            particule.time = 10;
+            particules.push(particule);
+            ParticuleGeometry.vertices.push(particule);
+        }
         console.log(particule);
-        ParticuleGeometry.vertices.push(particule);
+
+
+for (var p in particules){
+    if (particules[p].time > 0){
+        particules[p].time -= 1;
+    } else {
+        scene.remove(particules[p]);
+    }
+}
 
       var ParticuleMaterial = new THREE.PointsMaterial({
 
@@ -330,7 +344,7 @@ console.log(particule);
             console.log("found");
 
             intersects[i].object.material.transparent = true;
-           // scene.remove( intersects[i].object );
+           scene.remove( intersects[i].object );
             break;
             //intersects[i].object.material.color.set(0xff0000);
         }

@@ -25,10 +25,10 @@ let camera, scene, renderer, geometry, material, mesh, controls, composer;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 
+
 var verticalSpeed = 0;
 
 var keys = [];
-
 
 
 
@@ -301,9 +301,30 @@ function animate() {
 
     if (keys[70]) {
 
+        var texture2 = new THREE.TextureLoader().load('/images/crate.gif');
+
         raycaster.setFromCamera(new THREE.Vector2(), camera);
 
         var intersects = raycaster.intersectObjects(scene.children);
+
+        var ParticuleGeometry = new THREE.Geometry();
+        var particule = new THREE.Vector3();
+
+console.log(particule);
+        particule.x = 2;
+        particule.z = 2;
+        particule.y = 2;
+        console.log(particule);
+        ParticuleGeometry.vertices.push(particule);
+
+      var ParticuleMaterial = new THREE.PointsMaterial({
+
+            map: texture2,
+            size: 1});
+
+        var ParticuleGroupement = new THREE.Points(ParticuleGeometry, ParticuleMaterial);
+
+        scene.add(ParticuleGroupement);
 
         for ( var i = 0; i<intersects.length; i++){
             console.log("found");
